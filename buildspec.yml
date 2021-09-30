@@ -8,6 +8,9 @@ phases:
       # Install dependencies needed for running tests
       - npm install
 
+      # Run build
+      - npm run build
+
       # Upgrade AWS CLI to the latest version
       - pip3 install --upgrade awscli
   pre_build:
@@ -35,4 +38,5 @@ artifacts:
     - scripts/*
     - node_modules/**/*
     - public/**/*
+    - build/**/*
     - template-configuration.json

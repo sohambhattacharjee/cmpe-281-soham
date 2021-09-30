@@ -7,6 +7,10 @@ files:
   destination: /home/ec2-user/node-website
 - source: /public/
   destination: /home/ec2-user/node-website/public
+- source: /build/
+  destination: /home/ec2-user/node-website/build
+- source: /node_modules/
+  destination: /home/ec2-user/node-website/node_modules
 - source: /scripts/requirements.txt
   destination: /home/ec2-user/scripts
 hooks:

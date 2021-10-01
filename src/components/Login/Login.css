@@ -1,0 +1,19 @@
+.login-card {
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 12%) 0px 0.0625rem 0.25rem;
+    border-radius: 0.25rem;
+    padding: 2.5rem 0px 3.5rem;
+}
+
+.registerMessage {
+    margin-top: 10vh;
+}
+
+.login-form{
+    width: 373px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 16px;
+}

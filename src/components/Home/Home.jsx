@@ -5,16 +5,23 @@ import axios from 'axios';
 import './Home.css';
 
 function Home(props) {
-
-    function redirectToLogin() {
-        props.history.push('/login');
-    }
-
     function openFileDrawer() {
         document.getElementById('uploadFile').click()
     }
     function handleUpload(e) {
-
+        const file = e.currentTarget.files[0]
+        if (((file.size / 1024) / 1024).toFixed(4) <= 10) {// MB
+            var formData = new FormData();
+            formData.append("file", file);
+            formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
+            axios.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+        } else {
+            //alert that the file is too big
+        }
     }
     return (
         <div>

@@ -1,5 +1,5 @@
 .file-card{
-    width: 373px;
+    width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -22,5 +22,5 @@
 }
 .btn-wrapper {
     margin: 0 auto;
-    width: 70%;
+    width: 50%;
 }

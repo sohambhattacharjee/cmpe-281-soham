@@ -40,6 +40,8 @@ const getAllFiles = async (req, res) => {
                 return content.Size > 0
             }).map(file => {
                 return {
+                    key: file.Key,
+                    fileName: file.Key.replace(req.body.path,``),
                     downloadLink: `${CLOUDFRONT_BASE_URL}/${file.Key}`,
                     modifiedOn: file.LastModified,
                     size: file.Size,

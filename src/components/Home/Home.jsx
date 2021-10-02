@@ -29,6 +29,17 @@ function Home(props) {
         }
     }
 
+    async function deleteFile(key) {
+        try {
+            await axios.post('/deleteFile', {
+                key
+            })
+            await fetchMyFiles()
+        } catch (err) {
+
+        }
+    }
+
     async function handleUpload(e) {
         const file = e.currentTarget.files[0]
         if (((file.size / 1024) / 1024).toFixed(4) <= 10) {// MB
@@ -54,7 +65,7 @@ function Home(props) {
             <div className="file-card">
                 {state.files.length === 0 ? <div className="alert-tex">
                     Looks like you dont have any files yet!!
-                </div> : <Files files={state.files} />}
+                </div> : <Files deleteFile={deleteFile} files={state.files} />}
                 <div className="btn-wrapper">
                     <input id='uploadFile' type='file' onChange={handleUpload} hidden />
                     <button

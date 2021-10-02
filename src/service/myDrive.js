@@ -26,6 +26,21 @@ const uploadFile = async (req, res) => {
     res.send("ok")
 }
 
+const deleteFile = async (req, res) => {
+    if (!req.body.key) {
+        res.status = 400
+        res.send("missing key")
+    }
+    try {
+        await s3.send(new DeleteObjectCommand({ Key: req.body.key, Bucket: APPLICATION_BUCKET }))
+        res.status = 200
+        res.send("deleted")
+    } catch (ex) {
+        res.status = 400
+        res.send("failed to delete")
+    }
+}
+
 const getAllFiles = async (req, res) => {
     const listObjectsCommand = {
         Bucket: APPLICATION_BUCKET
@@ -67,4 +82,4 @@ const getAllFiles = async (req, res) => {
     res.send(body)
 }
 
-module.exports = { uploadFile, getAllFiles }
+module.exports = { uploadFile, getAllFiles, deleteFile }

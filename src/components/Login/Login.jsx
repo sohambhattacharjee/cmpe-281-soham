@@ -32,7 +32,7 @@ const Login = (props) => {
             ...prevState,
             successMessage: "Login successful. Redirecting to home page..",
           }));
-          localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
+          localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
           redirectToHome();
           props.showError(null);
         } else if (response.code === 204) {

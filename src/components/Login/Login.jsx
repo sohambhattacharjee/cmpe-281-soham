@@ -3,8 +3,10 @@ import axios from "axios";
 import "./Login.css";
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from "../../constants/apiConstants";
 import { withRouter } from "react-router-dom";
+import { useAlert } from 'react-alert'
 
 const Login = (props) => {
+  const alert = useAlert()
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -19,31 +21,34 @@ const Login = (props) => {
   };
 
   const handleSubmitClick = (e) => {
-    e.preventDefault();
-    const payload = {
-      email: state.email,
-      password: state.password,
-    };
-    axios
-      .post(API_BASE_URL, payload)
-      .then(function (response) {
-        if (response.status === 200) {
-          setState((prevState) => ({
-            ...prevState,
-            successMessage: "Login successful. Redirecting to home page..",
-          }));
-          localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
-          props.setName(response.data.firstName)
-          redirectToHome();
-          props.showError(null);
-        } else if (response.code === 400) {
-          props.showError("Either username or password is incorrect");
-        }
-      })
-      .catch(function (error) {
-        //TODO: alert failure
-        console.log(error);
-      });
+    if (state.email !== "" && state.password !== "") {
+      e.preventDefault();
+      const payload = {
+        email: state.email,
+        password: state.password,
+      };
+      axios
+        .post(API_BASE_URL, payload)
+        .then(function (response) {
+          if (response.status === 200) {
+            setState((prevState) => ({
+              ...prevState,
+              successMessage: "Login successful. Redirecting to home page..",
+            }));
+            localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
+            props.setName(response.data.firstName)
+            redirectToHome();
+          } else if (response.code === 400) {
+            alert.show('Login failed', { type: 'error' })
+          }
+        })
+        .catch(function (error) {
+          alert.show('Login failed', { type: 'error' })
+        });
+    } else {
+      e.preventDefault();
+      alert.show('Please enter email & password', { type: 'error' })
+    }
   };
   const redirectToHome = () => {
     props.history.push("/home");
@@ -53,7 +58,7 @@ const Login = (props) => {
   };
   return (
     <div className="login-card">
-      <img alt="logo" className="logo" src="../../../possum.png"/>
+      <img alt="logo" className="logo" src="../../../possum.png" />
       <div className="header-title">LogIn to MyApp</div>
       <form className="login-form">
         <div className="form-group text-left">

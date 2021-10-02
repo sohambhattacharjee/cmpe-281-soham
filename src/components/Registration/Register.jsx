@@ -3,8 +3,10 @@ import axios from 'axios';
 import './Register.css';
 import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
+import { useAlert } from 'react-alert'
 
 function RegistrationForm(props) {
+    const alert = useAlert()
     const [state, setState] = useState({
         email: "",
         password: "",
@@ -20,14 +22,13 @@ function RegistrationForm(props) {
     }
     const sendDetailsToServer = () => {
         if (state.email.length && state.password.length) {
-            props.showError(null);
             const payload = {
                 "email": state.email,
                 "password": state.password,
                 "firstName": state.firstName,
                 "lastName": state.lastName,
             }
-            axios.pur(API_BASE_URL, payload)
+            axios.put(API_BASE_URL, payload)
                 .then(function (response) {
                     if (response.status === 200) {
                         setState(prevState => ({
@@ -37,17 +38,15 @@ function RegistrationForm(props) {
                         localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
                         props.setName(response.data.firstName)
                         redirectToHome();
-                        props.showError(null)
                     } else {
-                        props.showError("Some error ocurred");
+                        alert.show('Registration failed', { type: 'error' })
                     }
                 })
                 .catch(function (error) {
-                    //TODO: alert failure
-                    console.log(error);
+                    alert.show('Registration failed', { type: 'error' })
                 });
         } else {
-            props.showError('Please enter valid username and password')
+            alert.show('Please complete the form', { type: 'error' })
         }
 
     }
@@ -62,7 +61,7 @@ function RegistrationForm(props) {
         if (state.password === state.confirmPassword) {
             sendDetailsToServer()
         } else {
-            props.showError('Passwords do not match');
+            alert.show('Passwords do not match', { type: 'error' })
         }
     }
     return (

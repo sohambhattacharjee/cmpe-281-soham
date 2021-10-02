@@ -4,8 +4,10 @@ import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../constants/apiConstants';
 import axios from 'axios';
 import './Home.css';
 import Files from '../Files/Files';
+import { useAlert } from 'react-alert'
 
 function Home(props) {
+    const alert = useAlert()
     const [state, setState] = useState({
         files: []
     })
@@ -25,7 +27,7 @@ function Home(props) {
             setState({ files: response.data.files })
         }
         catch (ex) {
-            //TODO: alert failure
+            alert.show('Could not fetch files', { type: 'error' })
         }
     }
 
@@ -35,8 +37,9 @@ function Home(props) {
                 key
             })
             await fetchMyFiles()
+            alert.show('Deleted', { type: 'success' })
         } catch (err) {
-
+            alert.show('Deletion failed', { type: 'error' })
         }
     }
 
@@ -53,11 +56,12 @@ function Home(props) {
                     }
                 })
                 await fetchMyFiles()
+                alert.show('Uploaded!', { type: 'success' })
             } catch (err) {
-                //TODO: alert failure
+                alert.show('Upload failed', { type: 'error' })
             }
         } else {
-            //alert that the file is too big
+            alert.show('File is too big.', { type: 'error' })
         }
     }
     return (

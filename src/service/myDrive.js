@@ -9,11 +9,15 @@ const uploadFile = async (req, res) => {
         return res.status(400).send('No files were uploaded.');
     }
     try {
-        const { s3_folder } = JSON.parse(req.body.session)
+        const { s3_folder, firstName, lastName } = JSON.parse(req.body.session)
         const uploadParams = {
             Bucket: APPLICATION_BUCKET,
             Key: `${s3_folder}/${req.files.file.name}`,
-            Body: req.files.file.data
+            Body: req.files.file.data,
+            Metadata: {
+                firstName,
+                lastName
+            }
         };
         const data = await s3.send(new PutObjectCommand(uploadParams))
     }

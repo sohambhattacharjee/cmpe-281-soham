@@ -24,20 +24,27 @@ function Home(props) {
             })
             setState({ files: response.data.files })
         }
-        catch (ex) { }
+        catch (ex) {
+            //TODO: alert failure
+        }
     }
 
-    function handleUpload(e) {
+    async function handleUpload(e) {
         const file = e.currentTarget.files[0]
         if (((file.size / 1024) / 1024).toFixed(4) <= 10) {// MB
             var formData = new FormData();
             formData.append("file", file);
             formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
-            axios.post('/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+            try {
+                await axios.post('/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                await fetchMyFiles()
+            } catch (err) {
+                //TODO: alert failure
+            }
         } else {
             //alert that the file is too big
         }

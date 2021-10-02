@@ -23,6 +23,7 @@ const Header = (props) => {
                 return JSON.parse(localStorage.getItem(ACCESS_TOKEN_NAME)).firstName
             }
             catch (ex) {
+                //TODO: alert failure
                 return ""
             }
         }

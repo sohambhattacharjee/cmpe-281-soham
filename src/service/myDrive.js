@@ -4,14 +4,24 @@ const { s3 } = require("./client.js");
 
 const APPLICATION_BUCKET = `cmpe-281-soham-project-1`
 const CLOUDFRONT_BASE_URL = `https://d37b5idd4bz28f.cloudfront.net`
-const uploadFile = (req, res) => {
+const uploadFile = async (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-    console.log(req.files.file);
-    console.log(req.body.session);
-
-
+    try {
+        const { s3_folder } = JSON.parse(req.body.session)
+        const uploadParams = {
+            Bucket: APPLICATION_BUCKET,
+            Key: `${s3_folder}/${req.files.file.name}`,
+            Body: req.files.file.data
+        };
+        const data = await s3.send(new PutObjectCommand(uploadParams))
+    }
+    catch (ex) {
+        res.status = 400
+        res.send("failed")
+        return
+    }
     res.status = 200
     res.send("ok")
 }
@@ -41,7 +51,7 @@ const getAllFiles = async (req, res) => {
             }).map(file => {
                 return {
                     key: file.Key,
-                    fileName: file.Key.replace(req.body.path,``),
+                    fileName: file.Key.replace(req.body.path, ``),
                     downloadLink: `${CLOUDFRONT_BASE_URL}/${file.Key}`,
                     modifiedOn: file.LastModified,
                     size: file.Size,

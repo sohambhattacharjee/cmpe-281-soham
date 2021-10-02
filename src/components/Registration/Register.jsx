@@ -43,6 +43,7 @@ function RegistrationForm(props) {
                     }
                 })
                 .catch(function (error) {
+                    //TODO: alert failure
                     console.log(error);
                 });
         } else {

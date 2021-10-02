@@ -10,23 +10,23 @@ import Login from './components/Login/Login';
 import AlertComponent from './components/Alert/Alert';
 
 function App() {
-  //const [title, updateTitle] = useState(null);
   const [errorMessage, updateErrorMessage] = useState(null);
+  const [name, setName] = useState(null)
   return (
     <Router>
       <div className="App">
-      {window.location.pathname === "/home" ? <Header />: null}
+        <Header name={name} />
         <div className="layout">
           <div className="container d-flex align-items-center flex-column">
             <Switch>
               <Route path="/" exact={true}>
-                <Registration showError={updateErrorMessage} />
+                <Registration setName={setName} showError={updateErrorMessage} />
               </Route>
               <Route path="/register">
-                <Registration showError={updateErrorMessage} />
+                <Registration setName={setName} showError={updateErrorMessage} />
               </Route>
               <Route path="/login">
-                <Login showError={updateErrorMessage} />
+                <Login setName={setName} showError={updateErrorMessage} />
               </Route>
               <PrivateRoute path="/home">
                 <Home />

@@ -33,12 +33,11 @@ const Login = (props) => {
             successMessage: "Login successful. Redirecting to home page..",
           }));
           localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
+          props.setName(response.data.firstName)
           redirectToHome();
           props.showError(null);
-        } else if (response.code === 204) {
-          props.showError("Username and password do not match");
-        } else {
-          props.showError("Username does not exists");
+        } else if (response.code === 400) {
+          props.showError("Either username or password is incorrect");
         }
       })
       .catch(function (error) {
@@ -46,12 +45,10 @@ const Login = (props) => {
       });
   };
   const redirectToHome = () => {
-    props.updateTitle("Home");
     props.history.push("/home");
   };
   const redirectToRegister = () => {
     props.history.push("/register");
-    props.updateTitle("Register");
   };
   return (
     <div className="login-card">

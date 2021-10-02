@@ -35,6 +35,7 @@ function RegistrationForm(props) {
                             'successMessage': 'Registration successful. Redirecting to home page..'
                         }))
                         localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
+                        props.setName(response.data.firstName)
                         redirectToHome();
                         props.showError(null)
                     } else {
@@ -50,11 +51,9 @@ function RegistrationForm(props) {
 
     }
     const redirectToHome = () => {
-        props.updateTitle('Home')
         props.history.push('/home');
     }
     const redirectToLogin = () => {
-        props.updateTitle('Login')
         props.history.push('/login');
     }
     const handleSubmitClick = (e) => {

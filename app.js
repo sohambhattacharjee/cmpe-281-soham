@@ -1,13 +1,17 @@
 const express = require('express');
 const path = require('path');
-const app = express();
-const { uploadFile } = require('./src/service/myDrive')
+const bodyParser = require('body-parser');
+
+const { uploadFile, getAllFiles } = require('./src/service/myDrive')
 const fileUpload = require('express-fileupload')
 const port = process.env.PORT || 3000
+const app = express();
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-// app.post('/getFileList')
+var jsonParser = bodyParser.json()
+
+app.post('/getFiles', jsonParser, getAllFiles)
 app.use(fileUpload())
 app.post('/upload', uploadFile)
 

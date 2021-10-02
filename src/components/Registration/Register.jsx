@@ -27,7 +27,7 @@ function RegistrationForm(props) {
                 "firstName": state.firstName,
                 "lastName": state.lastName,
             }
-            axios.post(API_BASE_URL+'/user/register', payload)
+            axios.pur(API_BASE_URL, payload)
                 .then(function (response) {
                     if(response.status === 200){
                         setState(prevState => ({

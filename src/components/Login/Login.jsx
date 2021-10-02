@@ -25,14 +25,14 @@ const Login = (props) => {
       password: state.password,
     };
     axios
-      .post(API_BASE_URL + "/user/login", payload)
+      .post(API_BASE_URL, payload)
       .then(function (response) {
         if (response.status === 200) {
           setState((prevState) => ({
             ...prevState,
             successMessage: "Login successful. Redirecting to home page..",
           }));
-          localStorage.setItem(ACCESS_TOKEN_NAME, response.data.token);
+          localStorage.setItem(ACCESS_TOKEN_NAME, response.data);
           redirectToHome();
           props.showError(null);
         } else if (response.code === 204) {

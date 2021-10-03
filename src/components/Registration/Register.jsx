@@ -1,140 +1,137 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './Register.css';
-import {API_BASE_URL, ACCESS_TOKEN_NAME} from '../../constants/apiConstants';
+import { API_BASE_URL, ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
+import { useAlert } from 'react-alert'
 
 function RegistrationForm(props) {
-    const [state , setState] = useState({
-        email : "",
-        password : "",
+    const alert = useAlert()
+    const [state, setState] = useState({
+        email: "",
+        password: "",
         confirmPassword: "",
         successMessage: null
     })
     const handleChange = (e) => {
-        const {id , value} = e.target   
+        const { id, value } = e.target
         setState(prevState => ({
             ...prevState,
-            [id] : value
+            [id]: value
         }))
     }
     const sendDetailsToServer = () => {
-        if(state.email.length && state.password.length) {
-            props.showError(null);
-            const payload={
-                "email":state.email,
-                "password":state.password,
-                "firstName": state.firstName,
-                "lastName": state.lastName,
+        const { email, password, firstName, lastName } = state
+        if (email.length && password.length && firstName.length && lastName.length) {
+            const payload = {
+                email, password, firstName, lastName
             }
-            axios.pur(API_BASE_URL, payload)
+            axios.put(API_BASE_URL, payload)
                 .then(function (response) {
-                    if(response.status === 200){
+                    if (response.status === 200) {
                         setState(prevState => ({
                             ...prevState,
-                            'successMessage' : 'Registration successful. Redirecting to home page..'
+                            'successMessage': 'Registration successful. Redirecting to home page..'
                         }))
-                        localStorage.setItem(ACCESS_TOKEN_NAME,response.data.token);
+                        localStorage.setItem(ACCESS_TOKEN_NAME, JSON.stringify(response.data));
+                        props.setName(response.data.firstName)
                         redirectToHome();
-                        props.showError(null)
-                    } else{
-                        props.showError("Some error ocurred");
+                    } else {
+                        alert.show('Registration failed', { type: 'error' })
                     }
                 })
                 .catch(function (error) {
-                    console.log(error);
-                });    
+                    alert.show('Registration failed', { type: 'error' })
+                });
         } else {
-            props.showError('Please enter valid username and password')    
+            alert.show('Please complete the form', { type: 'error' })
         }
-        
+
     }
     const redirectToHome = () => {
-        props.updateTitle('Home')
         props.history.push('/home');
     }
     const redirectToLogin = () => {
-        props.updateTitle('Login')
-        props.history.push('/login'); 
+        props.history.push('/login');
     }
     const handleSubmitClick = (e) => {
         e.preventDefault();
-        if(state.password === state.confirmPassword) {
-            sendDetailsToServer()    
+        if (state.password === state.confirmPassword) {
+            sendDetailsToServer()
         } else {
-            props.showError('Passwords do not match');
+            alert.show('Passwords do not match', { type: 'error' })
         }
     }
-    return(
+    return (
         <div className="register-card">
-            <img alt="logo" className="logo" src="../../../possum.png"/>
+            <img alt="logo" className="logo" src="../../../possum.png" />
             <div className="header-title">Register to MyApp</div>
             <form className="register-form">
-            <div className="form-group text-left">
-                <input 
-                       className="form-control" 
-                       id="FirstName" 
-                       aria-describedby="FirstNameHelp" 
-                       placeholder="First Name" 
-                       value={state.firstName}
-                       onChange={handleChange}
-                />
+                <div className="form-group text-left">
+                    <input
+                        className="form-control"
+                        id="firstName"
+                        aria-describedby="FirstNameHelp"
+                        placeholder="First Name"
+                        value={state.firstName}
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="form-group text-left">
-                <input 
-                       className="form-control" 
-                       id="lastName" 
-                       aria-describedby="lastNameHelp" 
-                       placeholder="Last Name" 
-                       value={state.lastName}
-                       onChange={handleChange}
-                />
+                    <input
+                        className="form-control"
+                        id="lastName"
+                        aria-describedby="lastNameHelp"
+                        placeholder="Last Name"
+                        value={state.lastName}
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="form-group text-left">
-                <input type="email" 
-                       className="form-control" 
-                       id="email" 
-                       aria-describedby="emailHelp" 
-                       placeholder="Email" 
-                       value={state.email}
-                       onChange={handleChange}
-                />
-                <small id="emailHelp" className="text-muted">We'll never share your email with anyone else.</small>
+                    <input type="email"
+                        className="form-control"
+                        id="email"
+                        aria-describedby="emailHelp"
+                        placeholder="Email"
+                        value={state.email}
+                        onChange={handleChange}
+                    />
+                    <small id="emailHelp" className="text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div className="form-group text-left">
-                    <input type="password" 
-                        className="form-control" 
-                        id="password" 
+                    <input type="password"
+                        className="form-control"
+                        id="password"
                         placeholder="Password"
                         value={state.password}
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="form-group text-left">
-                    <input type="password" 
-                        className="form-control" 
-                        id="confirmPassword" 
+                    <input type="password"
+                        className="form-control"
+                        id="confirmPassword"
                         placeholder="Confirm Password"
                         value={state.confirmPassword}
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     className="btn-primary"
                     onClick={handleSubmitClick}
                 >
                     Register
                 </button>
             </form>
-            <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
+            <div className="alert alert-success mt-2" style={{ display: state.successMessage ? 'block' : 'none' }} role="alert">
                 {state.successMessage}
             </div>
             <div className="mt-2">
                 <span>Already have an account? </span>
-                <span className="loginText" onClick={() => redirectToLogin()}>Login here</span> 
+                <span className="loginText" onClick={() => redirectToLogin()}>Login here</span>
             </div>
-            
+
         </div>
     )
 }

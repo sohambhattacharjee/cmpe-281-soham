@@ -1,0 +1,64 @@
+/* Variables
+================================== */
+/* Tables
+================================== */
+.Rtable {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 3em 0;
+    padding: 0;
+}
+.actions a {
+    font-size: small;
+    cursor: pointer;
+    color: gray;
+}
+.navigate-back {
+    padding-bottom: 20px;
+    cursor: pointer;
+    color: gray;
+}
+.Rtable-cell {
+    box-sizing: border-box;
+    flex-grow: 1;
+    width: 100%;
+    padding: 0.8em 1.2em;
+    overflow: hidden;
+    list-style: none;
+    border: solid 3px white;
+    background: rgba(112, 128, 144, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Rtable-cell.medium {
+    flex-grow: 2;
+}
+.Rtable-cell.large {
+    flex-grow: 3;
+}
+.Rtable-cell > h1,
+.Rtable-cell > h2,
+.Rtable-cell > h3,
+.Rtable-cell > h4,
+.Rtable-cell > h5,
+.Rtable-cell > h6 {
+    margin: 0;
+}
+/* Table column sizing
+================================== */
+.Rtable--2cols > .Rtable-cell {
+    width: 50%;
+}
+.Rtable--3cols > .Rtable-cell {
+    width: 33.33%;
+}
+.Rtable--4cols > .Rtable-cell {
+    width: 25%;
+}
+.Rtable--5cols > .Rtable-cell {
+    width: 20%;
+}
+.Rtable--6cols > .Rtable-cell {
+    width: 16.6%;
+}

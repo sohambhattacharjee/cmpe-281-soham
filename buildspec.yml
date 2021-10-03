@@ -34,6 +34,7 @@ artifacts:
     - README.md
     - package.json
     - app.js
+    - src/service/**/*
     - appspec.yml
     - scripts/*
     - node_modules/**/*

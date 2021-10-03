@@ -13,6 +13,11 @@
     cursor: pointer;
     color: gray;
 }
+.navigate-back {
+    padding-bottom: 20px;
+    cursor: pointer;
+    color: gray;
+}
 .Rtable-cell {
     box-sizing: border-box;
     flex-grow: 1;
@@ -25,6 +30,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.Rtable-cell.medium {
+    flex-grow: 2;
+}
+.Rtable-cell.large {
+    flex-grow: 3;
 }
 .Rtable-cell > h1,
 .Rtable-cell > h2,

@@ -3,7 +3,19 @@ import { withRouter } from "react-router-dom";
 import { ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
 import './Header.css';
 const Header = (props) => {
-
+    function renderAdminLink() {
+        try {
+            if (JSON.parse(localStorage.getItem(ACCESS_TOKEN_NAME)).role_id === 1) {
+                return <><span className="ml-auto">
+                    <a className="logout-text" onClick={() => props.toggleAdminMode()}>
+                        {props.adminMode ? `User` : `Admin`} Mode
+                    </a>
+                </span>&nbsp;|&nbsp;</>
+            }
+        } catch (error) {
+            return null
+        }
+    }
     function renderLogout() {
         if (props.location.pathname === '/home') {
             return (
@@ -30,13 +42,14 @@ const Header = (props) => {
     }
 
     const { pathname } = props.location
-    if(pathname !== '/home') {
+    if (pathname !== '/home') {
         return null
     }
 
     return <nav className="navbar">
         <div className="row col-12 d-flex justify-content-center text-white">
             <span className="h3">Hello {<b>{`${getName()}`}</b>} | </span>
+            {renderAdminLink()}
             {renderLogout()}
         </div>
     </nav>

@@ -11,6 +11,12 @@ import AlertTemplate from 'react-alert-template-basic'
 
 function App() {
   const [name, setName] = useState(null)
+  const [adminMode, setAdminMode] = useState(false)
+
+  function toggleAdminMode() {
+    setAdminMode(!adminMode)
+  }
+
   const options = {
     position: positions.BOTTOM_CENTER,
     timeout: 5000,
@@ -22,7 +28,7 @@ function App() {
     <Router>
       <AlertProvider template={AlertTemplate} {...options}>
         <div className="App">
-          <Header name={name} />
+          <Header name={name} adminMode={adminMode} toggleAdminMode={toggleAdminMode} />
           <div className="layout">
             <div className="container d-flex align-items-center flex-column">
               <Switch>
@@ -36,7 +42,7 @@ function App() {
                   <Login setName={setName} />
                 </Route>
                 <PrivateRoute path="/home">
-                  <Home />
+                  <Home adminMode={adminMode} />
                 </PrivateRoute>
               </Switch>
             </div>

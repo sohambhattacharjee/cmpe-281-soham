@@ -6,7 +6,7 @@ const Files = (props) => {
         <div className="Rtable Rtable--3cols">
             {props.files.map(file => {
                 return (<>
-                    <div className="Rtable-cell"><h3>{file.fileName}</h3></div>
+                    <div className="Rtable-cell medium"><h3>{file.fileName}</h3></div>
                     <div className="Rtable-cell">{file.size} (bytes)</div>
                     <div className="Rtable-cell actions">
                         <a href={file.downloadLink} target="_blank">

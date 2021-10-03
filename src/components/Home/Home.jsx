@@ -4,27 +4,33 @@ import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../constants/apiConstants';
 import axios from 'axios';
 import './Home.css';
 import Files from '../Files/Files';
+import Folders from '../Folders/Folders';
 import { useAlert } from 'react-alert'
 
 function Home(props) {
     const alert = useAlert()
     const [state, setState] = useState({
-        files: []
+        files: [],
+        folders: []
     })
     function openFileDrawer() {
         document.getElementById('uploadFile').click()
     }
     useEffect(() => {
         fetchMyFiles()
-    }, [])
-    async function fetchMyFiles() {
+    }, [props.adminMode])
+    async function fetchMyFiles(adminPath = ``) {
         const session = JSON.parse(localStorage.getItem(ACCESS_TOKEN_NAME))
         try {
+            const path = props.adminMode ? adminPath : `${session.s3_folder}/`
             const response = await axios.post(`/getFiles`, {
-                path: `${session.s3_folder}/`,
+                path,
                 userRoleId: `${session.role_id}`
             })
-            setState({ files: response.data.files })
+            setState({
+                files: response.data.files,
+                folders: response.data.folders
+            })
         }
         catch (ex) {
             alert.show('Could not fetch files', { type: 'error' })
@@ -42,6 +48,8 @@ function Home(props) {
             alert.show('Deletion failed', { type: 'error' })
         }
     }
+
+
 
     async function handleUpload(e) {
         const file = e.currentTarget.files[0]
@@ -67,10 +75,15 @@ function Home(props) {
     return (
         <div>
             <div className="file-card">
-                {state.files.length === 0 ? <div className="alert-tex">
-                    Looks like you dont have any files yet!!
-                </div> : <Files deleteFile={deleteFile} files={state.files} />}
-                <div className="btn-wrapper">
+                {props.adminMode ? <Folders
+                    fetchFiles={fetchMyFiles}
+                    deleteFile={deleteFile}
+                    folders={state.folders}
+                    files={state.files} /> :
+                    (!state.files || state.files.length === 0) ? <div className="alert-tex">
+                        Looks like you dont have any files yet!!
+                    </div> : <Files deleteFile={deleteFile} files={state.files} />}
+                {!props.adminMode ? <div className="btn-wrapper">
                     <input id='uploadFile' type='file' onChange={handleUpload} hidden />
                     <button
                         type="button"
@@ -80,7 +93,7 @@ function Home(props) {
                         Upload
                     </button>
                     <div className="message-dec">**Upto 10 Mb</div>
-                </div>
+                </div> : null}
             </div>
         </div>
     )

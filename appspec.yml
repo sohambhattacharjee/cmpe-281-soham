@@ -3,6 +3,8 @@ os: linux
 files:
 - source: /app.js
   destination: /home/ec2-user/node-website
+- source: /src/service/
+  destination: /home/ec2-user/node-website/src/service
 - source: /package.json
   destination: /home/ec2-user/node-website
 - source: /public/

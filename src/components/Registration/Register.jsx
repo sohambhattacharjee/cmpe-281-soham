@@ -21,12 +21,10 @@ function RegistrationForm(props) {
         }))
     }
     const sendDetailsToServer = () => {
-        if (state.email.length && state.password.length) {
+        const { email, password, firstName, lastName } = state
+        if (email.length && password.length && firstName.length && lastName.length) {
             const payload = {
-                "email": state.email,
-                "password": state.password,
-                "firstName": state.firstName,
-                "lastName": state.lastName,
+                email, password, firstName, lastName
             }
             axios.put(API_BASE_URL, payload)
                 .then(function (response) {
@@ -72,7 +70,7 @@ function RegistrationForm(props) {
                 <div className="form-group text-left">
                     <input
                         className="form-control"
-                        id="FirstName"
+                        id="firstName"
                         aria-describedby="FirstNameHelp"
                         placeholder="First Name"
                         value={state.firstName}

@@ -16,7 +16,7 @@ function Folders(props) {
                 props.files && <>
                     <a onClick={() => props.fetchFiles()} className="navigate-back">
                         <i class="fa fa-chevron-left fa-lg"></i> Back</a>
-                    <Files deleteFile={props.deleteFile} files={props.files} />
+                    <Files deleteFile={props.deleteFile} updateFile={props.updateFile} files={props.files} />
                 </>
             }
         </div>

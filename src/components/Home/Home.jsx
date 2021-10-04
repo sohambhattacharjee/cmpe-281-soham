@@ -11,10 +11,13 @@ function Home(props) {
     const alert = useAlert()
     const [state, setState] = useState({
         files: [],
-        folders: []
+        folders: [],
     })
-    function openFileDrawer() {
-        document.getElementById('uploadFile').click()
+    const [updateMode, setUpdateMode] = useState(false)
+    const [extension, setExtension] = useState('')
+    function openFileDrawer(ext = ``) {
+        setExtension(ext)
+        setTimeout(() => document.getElementById('uploadFile').click(), 20)
     }
     useEffect(() => {
         fetchMyFiles()
@@ -49,25 +52,32 @@ function Home(props) {
         }
     }
 
+    async function updateFile(key) {
+        const fileExtn = key.split('.').pop()
+        openFileDrawer(`.${fileExtn}`)
+    }
 
+    async function uploadFile(file) {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
+        try {
+            await axios.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            await fetchMyFiles()
+            alert.show('Uploaded!', { type: 'success' })
+        } catch (err) {
+            alert.show('Upload failed', { type: 'error' })
+        }
+    }
 
     async function handleUpload(e) {
         const file = e.currentTarget.files[0]
         if (((file.size / 1024) / 1024).toFixed(4) <= 10) {// MB
-            var formData = new FormData();
-            formData.append("file", file);
-            formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
-            try {
-                await axios.post('/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                await fetchMyFiles()
-                alert.show('Uploaded!', { type: 'success' })
-            } catch (err) {
-                alert.show('Upload failed', { type: 'error' })
-            }
+            uploadFile(file)
         } else {
             alert.show('File is too big.', { type: 'error' })
         }
@@ -76,15 +86,19 @@ function Home(props) {
         <div>
             <div className="file-card">
                 {props.adminMode ? <Folders
+                    updateFile={updateFile}
                     fetchFiles={fetchMyFiles}
                     deleteFile={deleteFile}
                     folders={state.folders}
                     files={state.files} /> :
                     (!state.files || state.files.length === 0) ? <div className="alert-tex">
                         Looks like you dont have any files yet!!
-                    </div> : <Files deleteFile={deleteFile} files={state.files} />}
+                    </div> : <Files
+                        deleteFile={deleteFile}
+                        updateFile={updateFile}
+                        files={state.files} />}
                 {!props.adminMode ? <div className="btn-wrapper">
-                    <input id='uploadFile' type='file' onChange={handleUpload} hidden />
+                    <input id='uploadFile' accept={extension} type='file' onChange={handleUpload} hidden />
                     <button
                         type="button"
                         className="btn-primary"

@@ -5,8 +5,7 @@
     justify-content: space-around;
     margin: 0 auto;
     margin-top: 16px;
-    min-height: 80vh;
-    
+    height: 80vh;
 }
 .message-dec{
     font-size: .75rem;

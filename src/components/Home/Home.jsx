@@ -16,6 +16,7 @@ function Home(props) {
 
     const [fileDesc, setFileDesc] = useState('');
     const [updateMode, setUpdateMode] = useState(false)
+    const [updateKey, setUpdateKey] = useState(null)
     const [extension, setExtension] = useState('')
     function openFileDrawer(ext = ``) {
         setExtension(ext)
@@ -57,12 +58,18 @@ function Home(props) {
     async function updateFile(key) {
         const fileExtn = key.split('.').pop()
         openFileDrawer(`.${fileExtn}`)
+        setUpdateMode(true)
+        setUpdateKey(key)
     }
 
     async function uploadFile(file) {
+        const metadata = { description: fileDesc }
+        if(updateMode) {
+            metadata.key = updateKey
+        }
         var formData = new FormData();
         formData.append("file", file);
-        formData.append("metadata", JSON.stringify({ description: fileDesc }));
+        formData.append("metadata", JSON.stringify(metadata));
         formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
         try {
             await axios.post('/upload', formData, {
@@ -74,6 +81,9 @@ function Home(props) {
             alert.show('Uploaded!', { type: 'success' })
         } catch (err) {
             alert.show('Upload failed', { type: 'error' })
+        } finally {
+            setUpdateMode(false)
+            setUpdateKey(null)
         }
     }
 

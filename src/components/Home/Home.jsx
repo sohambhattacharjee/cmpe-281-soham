@@ -13,6 +13,8 @@ function Home(props) {
         files: [],
         folders: [],
     })
+
+    const [fileDesc, setFileDesc] = useState('');
     const [updateMode, setUpdateMode] = useState(false)
     const [extension, setExtension] = useState('')
     function openFileDrawer(ext = ``) {
@@ -60,6 +62,7 @@ function Home(props) {
     async function uploadFile(file) {
         var formData = new FormData();
         formData.append("file", file);
+        formData.append("metadata", JSON.stringify({ description: fileDesc }));
         formData.append("session", localStorage.getItem(ACCESS_TOKEN_NAME))
         try {
             await axios.post('/upload', formData, {
@@ -72,6 +75,11 @@ function Home(props) {
         } catch (err) {
             alert.show('Upload failed', { type: 'error' })
         }
+    }
+
+    const handleChange = (e) => {
+        const { value } = e.target;
+        setFileDesc(value);
     }
 
     async function handleUpload(e) {
@@ -97,17 +105,30 @@ function Home(props) {
                         deleteFile={deleteFile}
                         updateFile={updateFile}
                         files={state.files} />}
-                {!props.adminMode ? <div className="btn-wrapper">
-                    <input id='uploadFile' accept={extension} type='file' onChange={handleUpload} hidden />
-                    <button
-                        type="button"
-                        className="btn-primary"
-                        onClick={openFileDrawer}
-                    >
-                        Upload
-                    </button>
-                    <div className="message-dec">**Upto 10 Mb</div>
-                </div> : null}
+                <div className="cta-wrapper">
+                    {!props.adminMode ? <><input
+                        type="text"
+                        className="form-control"
+                        id="file-desc"
+                        aria-describedby="file-desc"
+                        placeholder="Enter File Description"
+                        value={state.fileDesc}
+                        onChange={handleChange}
+                    />
+                        <div className="btn-wrapper">
+                            <input id='uploadFile' accept={extension} type='file' onChange={handleUpload} hidden />
+                            <button
+                                id="upload-primary"
+                                type="button"
+                                className="btn-primary"
+                                onClick={openFileDrawer}
+                                disabled={fileDesc === ''}
+                            >
+                                Upload
+                            </button>
+                            <div className="message-dec">**Upto 10 Mb</div>
+                        </div></> : null}
+                </div>
             </div>
         </div>
     )

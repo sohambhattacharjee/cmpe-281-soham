@@ -19,7 +19,8 @@ const uploadFile = async (req, res) => {
         return res.status(400).send('No files were uploaded.');
     }
     try {
-        const { s3_folder, firstName, lastName, editMode, description, key } = JSON.parse(req.body.session)
+        const { s3_folder, firstName, lastName, editMode } = JSON.parse(req.body.session)
+        const { description, key } = JSON.parse(req.body.metadata)
         const fileKey = key ? key : `${s3_folder}/${req.files.file.name}`
         const uploadParams = {
             Bucket: APPLICATION_BUCKET,

@@ -4,20 +4,36 @@ const { s3 } = require("./client.js");
 
 const APPLICATION_BUCKET = `cmpe-281-soham-project-1`
 const CLOUDFRONT_BASE_URL = `https://d37b5idd4bz28f.cloudfront.net`
+
+const serialize = (obj) => {
+    var str = [];
+    for (var p in obj)
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+}
+
 const uploadFile = async (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
     try {
-        const { s3_folder, firstName, lastName } = JSON.parse(req.body.session)
+        const { s3_folder, firstName, lastName, editMode } = JSON.parse(req.body.session)
+        const { description, key } = JSON.parse(req.body.metadata)
+        const fileKey = key ? key : `${s3_folder}/${req.files.file.name}`
         const uploadParams = {
             Bucket: APPLICATION_BUCKET,
-            Key: `${s3_folder}/${req.files.file.name}`,
+            Key: fileKey,
             Body: req.files.file.data,
-            Metadata: {
+            TaggingDirective: 'REPLACE',
+            Tagging: serialize({
                 firstName,
-                lastName
-            }
+                lastName,
+                fileUpdatedTime: editMode ? Date.now() : null,
+                fileUploadTime: editMode ? null : Date.now(),
+                description
+            })
         };
         const data = await s3.send(new PutObjectCommand(uploadParams))
     }

@@ -5,8 +5,7 @@
     justify-content: space-around;
     margin: 0 auto;
     margin-top: 16px;
-    min-height: 80vh;
-    
+    height: 80vh;
 }
 .message-dec{
     font-size: .75rem;
@@ -24,3 +23,13 @@
     margin: 0 auto;
     width: 50%;
 }
+#file-desc{
+    width: 80%;
+    margin: 0 auto;
+}
+#upload-primary:disabled{
+    background:  rgb(151, 142, 142);
+    color: #ccc;
+    cursor: no-drop;
+    border: none;
+ }
